@@ -35,6 +35,10 @@ jobs:
       - name: Install Flutter dependencies
         run: flutter pub get
 
+      # Create a basic Podfile if none exists
+      - name: Create Podfile 
+        run: pod init
+
       # Install CocoaPods dependencies (for iOS)
       - name: Install CocoaPods
         working-directory: ios
