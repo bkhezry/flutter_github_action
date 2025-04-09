@@ -136,15 +136,26 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
-      - run: sudo gem install cocoapods
-      - run: flutter --version
-      - run: flutter pub get
-      - run: |
-          flutter build ios --release --no-codesign
-          cd ios
+      - name: Install CocoaPods
+        run: sudo gem install cocoapods
+      
+      - name: Flutter Pub Get
+        run: flutter pub get
+      
+      - name: Generate iOS files
+        run: flutter create --platforms=ios .
+      
+      - name: Install Pods
+        working-directory: ./ios
+        run: |
+          pod repo update
           pod install
+      
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
       
       - uses: actions/upload-artifact@v4
         with:
           name: ios-build
-          path: build/ios/Release-iphoneos/
+          path: build/ios/iphoneos/Runner.app
+  
