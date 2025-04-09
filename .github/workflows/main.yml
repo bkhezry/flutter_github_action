@@ -112,8 +112,8 @@ jobs:
       
       - uses: actions/setup-java@v3
         with:
-          distribution: 'zulu'
-          java-version: '11'
+          distribution: 'temurin'
+          java-version: '17'
       
       - run: flutter --version
       - run: flutter pub get
