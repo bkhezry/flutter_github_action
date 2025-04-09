@@ -2,24 +2,44 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
+
+env:
+  FLUTTER_VERSION: "3.29.2"  # Explicit stable version
 
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+    outputs:
+      flutter-version: ${{ steps.setup-flutter.outputs.flutter-version }}
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Flutter
+        id: setup-flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: 'stable'
+          architecture: x64
+
   build_web:
     name: Build Web
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
+      - run: flutter --version
       - run: flutter pub get
-      
       - run: flutter build web
       
       - uses: actions/upload-artifact@v4
@@ -29,17 +49,18 @@ jobs:
 
   build_windows:
     name: Build Windows
+    needs: setup
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
+      - run: flutter --version
       - run: flutter pub get
-      
       - run: flutter build windows
       
       - uses: actions/upload-artifact@v4
@@ -49,17 +70,18 @@ jobs:
 
   build_linux:
     name: Build Linux
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
+      - run: flutter --version
       - run: flutter pub get
-      
       - run: flutter build linux
       
       - uses: actions/upload-artifact@v4
@@ -69,13 +91,14 @@ jobs:
 
   build_android:
     name: Build Android
+    needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
       - uses: actions/setup-java@v3
@@ -83,10 +106,9 @@ jobs:
           distribution: 'zulu'
           java-version: '11'
       
+      - run: flutter --version
       - run: flutter pub get
-      
       - run: flutter build apk --release
-      # For app bundle: flutter build appbundle --release
       
       - uses: actions/upload-artifact@v4
         with:
@@ -95,17 +117,19 @@ jobs:
 
   build_ios:
     name: Build iOS
+    needs: setup
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: 'stable'
       
+      - run: sudo gem install cocoapods
+      - run: flutter --version
       - run: flutter pub get
-      
       - run: |
           flutter build ios --release --no-codesign
           cd ios
