@@ -22,7 +22,7 @@ jobs:
       
       - run: flutter build web
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: web-build
           path: build/web
@@ -42,7 +42,7 @@ jobs:
       
       - run: flutter build windows
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: windows-build
           path: build/windows
@@ -62,7 +62,7 @@ jobs:
       
       - run: flutter build linux
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-build
           path: build/linux
@@ -88,7 +88,7 @@ jobs:
       - run: flutter build apk --release
       # For app bundle: flutter build appbundle --release
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
@@ -111,7 +111,7 @@ jobs:
           cd ios
           pod install
       
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ios-build
           path: build/ios/Release-iphoneos/
