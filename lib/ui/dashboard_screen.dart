@@ -32,7 +32,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               floatingActionButton: FloatingActionButton(
                 onPressed: () {
-                  context.read<DashboardController>().accessToAppDataState();
+                  context.read<DashboardController>().increment();
                 },
                 tooltip: 'Increment',
                 child: const Icon(Icons.add),
