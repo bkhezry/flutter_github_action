@@ -3,14 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_github_action/controllers/dashboard_controller.dart';
 import 'package:flutter_github_action/models/dashboard_data_model.dart';
 
-import '../controllers/app_data_state_controller.dart';
-
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final appDataStateController = context.read<AppDataStateController>();
     return Center(
       child: BlocProvider(
         create: (context) => DashboardController(),
