@@ -2,9 +2,8 @@ name: Flutter Build
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
+    tags:
+      - '*'
 
 env:
   FLUTTER_VERSION: "3.29.2"  # Explicit stable version
