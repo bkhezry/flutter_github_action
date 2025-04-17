@@ -134,26 +134,49 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      
+        
+      - name: Create zip archives
+        run: |
+          cd artifacts
+          zip -r windows-build.zip windows-build/
+          zip -r linux-build.zip linux-build/
+          zip -r web-build.zip web-build/
+          cd ..
+          
+      - name: Calculate SHA-256 checksums
+        id: sha
+        run: |
+          # Calculate checksums for all files
+          checksums=$(sha256sum artifacts/android-apk/app-release.apk \
+                    artifacts/windows-build.zip \
+                    artifacts/linux-build.zip \
+                    artifacts/web-build.zip)
+          # Escape newlines for output
+          checksums="${checksums//'%'/'%25'}"
+          checksums="${checksums//$'\n'/'%0A'}"
+          checksums="${checksums//$'\r'/'%0D'}"
+          echo "checksums=${checksums}" >> $GITHUB_OUTPUT
+          
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           name: Release ${{ needs.setup.outputs.version }}
+          tag_name: v${{ needs.setup.outputs.version }}
           draft: false
           prerelease: false
           files: |
             artifacts/android-apk/app-release.apk
-            artifacts/windows-build/**
-            artifacts/linux-build/**
-            artifacts/web-build/**
+            artifacts/windows-build.zip
+            artifacts/linux-build.zip
+            artifacts/web-build.zip
           body: |
             ## Release ${{ needs.setup.outputs.version }}
             
             ### Downloads
-            - Android APK
-            - Windows executable
-            - Linux executable
-            - Web build
+            - [Android APK](app-release.apk)
+            - [Windows Build](windows-build.zip)
+            - [Linux Build](linux-build.zip)
+            - [Web Build](web-build.zip)
             
             ### SHA-256 Checksums
             ```
