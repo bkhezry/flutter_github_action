@@ -121,4 +121,41 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk       
+            
+  create_release:
+    name: Create Release
+    needs: [setup, build_android, build_windows, build_linux, build_web]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ needs.setup.outputs.version }}
+          draft: false
+          prerelease: false
+          files: |
+            artifacts/android-apk/app-release.apk
+            artifacts/windows-build/**
+            artifacts/linux-build/**
+            artifacts/web-build/**
+          body: |
+            ## Release ${{ needs.setup.outputs.version }}
+            
+            ### Downloads
+            - Android APK
+            - Windows executable
+            - Linux executable
+            - Web build
+            
+            ### SHA-256 Checksums
+            ```
+            ${{ steps.sha.outputs.checksums }}
+            ```          
